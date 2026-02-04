@@ -75,23 +75,47 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
-  table-layout: fixed;
-  word-wrap: break-word;
 }
 
 th, td {
   border: 1px solid #0a1f44;
-  padding: 10px;
+  padding: 12px 8px;
   text-align: left;
 }
 
 th {
   background: #0a1f44;
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 td {
   background: #f9f9f9;
+  word-wrap: break-word;
+}
+
+tbody tr:nth-child(even) td {
+  background: #e9edf2;
+}
+
+table thead, table tbody {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table tbody {
+  display: block;
+  max-height: 300px; /* Makes table scrollable if too many rows */
+  overflow-y: auto;
+}
+
+table thead tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 footer {
@@ -135,7 +159,6 @@ footer {
     <input id="quantity" placeholder="Quantity" type="number">
     <button onclick="addShipment()">Add Shipment</button>
     <p class="small">All shipments appear below with estimated delivery.</p>
-    <button class="secondary" onclick="downloadJSON()">Download JSON File</button>
   </div>
 
   <!-- UPCOMING SHIPMENTS -->
@@ -144,13 +167,13 @@ footer {
     <table>
       <thead>
         <tr>
-          <th style="width:15%">Tracking #</th>
-          <th style="width:20%">Customer</th>
-          <th style="width:20%">Item</th>
-          <th style="width:10%">Quantity</th>
-          <th style="width:20%">Origin</th>
-          <th style="width:20%">Destination</th>
-          <th style="width:15%">ETA</th>
+          <th>Tracking #</th>
+          <th>Customer</th>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Origin</th>
+          <th>Destination</th>
+          <th>ETA</th>
         </tr>
       </thead>
       <tbody id="shipmentList"></tbody>
@@ -250,8 +273,6 @@ function addShipment() {
   document.getElementById("customer").value = "";
   document.getElementById("item").value = "";
   document.getElementById("quantity").value = "";
-  document.getElementById("origin").value = "";
-  document.getElementById("destination").value = "";
   document.getElementById("trackingNumberDisplay").textContent = "";
 
   renderShipments();
@@ -276,16 +297,6 @@ function renderShipments() {
     `;
     tableBody.appendChild(row);
   });
-}
-
-/* ---------- DOWNLOAD JSON FILE ---------- */
-function downloadJSON() {
-  const shipments = getShipments();
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(shipments, null, 2));
-  const dlAnchor = document.createElement('a');
-  dlAnchor.setAttribute("href", dataStr);
-  dlAnchor.setAttribute("download", "shipments.json");
-  dlAnchor.click();
 }
 
 /* ---------- INITIAL LOAD ---------- */
