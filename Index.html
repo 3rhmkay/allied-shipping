@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Allied Shipping & Security Company</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f8;
+  color: #222;
+}
+
+header {
+  background: #0a1f44;
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+section {
+  padding: 30px;
+  max-width: 900px;
+  margin: auto;
+}
+
+h2 {
+  color: #0a1f44;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+button {
+  background: #0a1f44;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #133b88;
+}
+
+.timeline {
+  border-left: 3px solid #0a1f44;
+  padding-left: 15px;
+  margin-top: 15px;
+}
+
+.timeline div {
+  margin-bottom: 10px;
+}
+
+footer {
+  background: #0a1f44;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.small {
+  font-size: 0.9em;
+  color: #555;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Allied Shipping & Security Company</h1>
+  <p>Secure • Reliable • Global Logistics</p>
+</header>
+
+<section>
+
+  <!-- TRACK SHIPMENT -->
+  <div class="card">
+    <h2>Track Your Shipment</h2>
+    <input id="trackInput" placeholder="Enter Tracking Number">
+    <button onclick="trackShipment()">Track Shipment</button>
+    <div id="trackResult"></div>
+  </div>
+
+  <!-- GENERATE TRACKING NUMBER -->
+  <div class="card">
+    <h2>Generate Tracking Number</h2>
+    <p class="small">Generate a unique tracking number for a new shipment.</p>
+    <input id="origin" placeholder="Origin (e.g. Swansea, UK)">
+    <input id="destination" placeholder="Destination (e.g. New York, USA)">
+    <button onclick="generateShipment()">Generate Tracking Number</button>
+    <div id="generatedResult"></div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="card">
+    <h2>Contact Information</h2>
+    <p>Email: alliedscpan78@gmail.com</p>
+    <p>UK Branch: +44 7418 602503</p>
+    <p>US Branch: +1 (912) 309-3156</p>
+    <p>Location: Swansea, UK</p>
+  </div>
+
+</section>
+
+<footer>
+  <p>© 2026 Allied Shipping & Security Company</p>
+</footer>
+
+<script>
+/* -------- STORAGE (SAFE) -------- */
+function getShipments() {
+  try {
+    return JSON.parse(localStorage.getItem("shipments")) || {};
+  } catch {
+    localStorage.removeItem("shipments");
+    return {};
+  }
+}
+
+function saveShipments(data) {
+  localStorage.setItem("shipments", JSON.stringify(data));
+}
+
+/* -------- TRACKING NUMBER -------- */
+function generateTrackingNumber() {
+  const year = new Date().getFullYear();
+  const random = Math.floor(1000 + Math.random() * 9000);
+  return `ASC-UK-${year}-${random}`;
+}
+
+/* -------- CREATE SHIPMENT -------- */
+function generateShipment() {
+  const originInput = document.getElementById("origin");
+  const destinationInput = document.getElementById("destination");
+  const origin = originInput.value.trim();
+  const destination = destinationInput.value.trim();
+
+  if (!origin || !destination) {
+    alert("Please enter both origin and destination.");
+    return;
+  }
+
+  const shipments = getShipments();
+  let tracking;
+  let attempts = 0;
+
+  do {
+    tracking = generateTrackingNumber();
+    attempts++;
+  } while (shipments[tracking] && attempts < 10);
+
+  shipments[tracking] = {
+    origin,
+    destination,
+    status: "Created",
+    security: "High",
+    updates: [
+      {
+        date: new Date().toLocaleString(),
+        message: "Shipment created"
+      }
+    ]
+  };
+
+  saveShipments(shipments);
+
+  originInput.value = "";
+  destinationInput.value = "";
+
+  document.getElementById("generatedResult").innerHTML = `
+    <p><strong>Tracking Number Generated:</strong></p>
+    <p style="font-size:1.2em; color:#0a1f44"><strong>${tracking}</strong></p>
+    <p class="small">Share this tracking number with the customer.</p>
+  `;
+}
+
+/* -------- TRACK SHIPMENT -------- */
+function trackShipment() {
+  const id = document.getElementById("trackInput").value.trim();
+  const result = document.getElementById("trackResult");
+
+  if (!id) {
+    result.innerHTML = "<p style='color:red'>Please enter a tracking number.</p>";
+    return;
+  }
+
+  const shipments = getShipments();
+  const s = shipments[id];
+
+  if (!s) {
+    result.innerHTML = "<p style='color:red'>Tracking number not found.</p>";
+    return;
+  }
+
+  result.innerHTML = `
+    <p><strong>Status:</strong> ${s.status}</p>
+    <p><strong>From:</strong> ${s.origin}</p>
+    <p><strong>To:</strong> ${s.destination}</p>
+    <p><strong>Security Level:</strong> ${s.security}</p>
+
+    <h3>Shipment Timeline</h3>
+    <div class="timeline">
+      ${s.updates.map(u => `
+        <div>
+          <strong>${u.date}</strong><br>
+          ${u.message}
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
