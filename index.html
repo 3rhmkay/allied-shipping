@@ -6,22 +6,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+/* ---------- COLOR SYSTEM ---------- */
 :root {
   --bg: #f4f6f8;
-  --text: #222;
+  --text: #1f1f1f;
   --card: #ffffff;
   --primary: #0a1f44;
   --border: #e0e0e0;
 }
 
 body.dark {
-  --bg: #0e1117;
-  --text: #e6e6e6;
-  --card: #161b22;
+  --bg: #000000;
+  --text: #eaeaea;
+  --card: #111111;
   --primary: #4f8cff;
-  --border: #2a2f3a;
+  --border: #2a2a2a;
 }
 
+/* ---------- BASE ---------- */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -33,23 +35,26 @@ body {
 header {
   background: var(--primary);
   color: white;
-  padding: 25px;
+  padding: 30px;
   text-align: center;
-  position: relative;
 }
 
-.toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: white;
-  color: var(--primary);
-  border-radius: 20px;
-  padding: 6px 12px;
+/* ---------- DARK MODE TOGGLE ---------- */
+.dark-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  padding: 8px 14px;
   font-size: 0.9em;
   cursor: pointer;
+  z-index: 999;
 }
 
+/* ---------- CONTENT ---------- */
 section {
   padding: 30px;
   max-width: 900px;
@@ -72,6 +77,9 @@ input, button {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 
 button {
@@ -91,6 +99,7 @@ button:hover {
   opacity: 0.9;
 }
 
+/* ---------- TIMELINE ---------- */
 .timeline {
   border-left: 3px solid var(--primary);
   padding-left: 15px;
@@ -101,6 +110,7 @@ button:hover {
   margin-bottom: 10px;
 }
 
+/* ---------- FOOTER ---------- */
 footer {
   background: var(--primary);
   color: white;
@@ -111,22 +121,26 @@ footer {
 
 .small {
   font-size: 0.9em;
-  color: gray;
+  color: #999;
 }
 </style>
 </head>
 
 <body>
 
+<!-- DARK MODE TOGGLE -->
+<div class="dark-toggle" onclick="toggleDarkMode()" id="themeToggle">
+  🌙 Dark
+</div>
+
 <header>
   <h1>Allied Shipping & Security Company</h1>
   <p>Secure • Reliable • Global Logistics</p>
-  <div class="toggle" onclick="toggleDarkMode()">🌙 Dark Mode</div>
 </header>
 
 <section>
 
-  <!-- TRACK SHIPMENT -->
+  <!-- TRACK -->
   <div class="card">
     <h2>Track Your Shipment</h2>
     <input id="trackInput" placeholder="Enter Tracking Number">
@@ -134,7 +148,7 @@ footer {
     <div id="trackResult"></div>
   </div>
 
-  <!-- GENERATE TRACKING NUMBER -->
+  <!-- GENERATE -->
   <div class="card">
     <h2>Generate Tracking Number</h2>
     <input id="origin" placeholder="Origin (e.g. Swansea, UK)">
@@ -160,15 +174,19 @@ footer {
 
 <script>
 /* ---------- DARK MODE ---------- */
-const theme = localStorage.getItem("theme");
-if (theme === "dark") document.body.classList.add("dark");
+const savedTheme = localStorage.getItem("theme");
+const toggleBtn = document.getElementById("themeToggle");
+
+if (savedTheme === "dark") {
+  document.body.classList.add("dark");
+  toggleBtn.textContent = "☀️ Light";
+}
 
 function toggleDarkMode() {
   document.body.classList.toggle("dark");
-  localStorage.setItem(
-    "theme",
-    document.body.classList.contains("dark") ? "dark" : "light"
-  );
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+  toggleBtn.textContent = isDark ? "☀️ Light" : "🌙 Dark";
 }
 
 /* ---------- STORAGE ---------- */
@@ -192,7 +210,7 @@ function generateTrackingNumber() {
   return `ASC-UK-${year}-${rand}`;
 }
 
-/* ---------- CREATE SHIPMENT ---------- */
+/* ---------- CREATE ---------- */
 function generateShipment() {
   const origin = document.getElementById("origin").value.trim();
   const destination = document.getElementById("destination").value.trim();
@@ -231,7 +249,7 @@ function generateShipment() {
   `;
 }
 
-/* ---------- COPY FUNCTION ---------- */
+/* ---------- COPY ---------- */
 function copyTracking() {
   const text = document.getElementById("trackingCode").innerText;
   navigator.clipboard.writeText(text).then(() => {
@@ -239,7 +257,7 @@ function copyTracking() {
   });
 }
 
-/* ---------- TRACK SHIPMENT ---------- */
+/* ---------- TRACK ---------- */
 function trackShipment() {
   const id = document.getElementById("trackInput").value.trim();
   const result = document.getElementById("trackResult");
