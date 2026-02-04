@@ -27,7 +27,7 @@ nav {
   background: #0a1f44;
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 40px;
   padding: 10px 0;
   position: sticky;
   top: 0;
@@ -38,10 +38,13 @@ nav a {
   color: white;
   text-decoration: none;
   font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.3s;
 }
 
 nav a:hover {
-  text-decoration: underline;
+  background: #16335b;
 }
 
 /* ---------- SECTIONS ---------- */
@@ -66,14 +69,14 @@ h2 {
 }
 
 /* ---------- INPUTS & BUTTONS ---------- */
-input, button {
+input, select, button {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
   box-sizing: border-box;
 }
 
-input {
+input, select {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
@@ -127,7 +130,7 @@ footer {
 }
 
 /* ---------- RESPONSIVE ---------- */
-@media(max-width:600px){
+@media(max-width:700px){
   nav {
     flex-direction: column;
     gap: 10px;
@@ -143,7 +146,7 @@ footer {
   <p>Shipping Made Simple</p>
 </header>
 
-<!-- NAVIGATION -->
+<!-- HORIZONTAL NAVIGATION -->
 <nav>
   <a href="#about">About</a>
   <a href="#tracking">Tracking Number</a>
@@ -152,7 +155,6 @@ footer {
   <a href="#contact">Contact</a>
 </nav>
 
-<!-- ABOUT SECTION -->
 <section id="about">
   <div class="card">
     <h2>About Us</h2>
@@ -160,7 +162,6 @@ footer {
   </div>
 </section>
 
-<!-- TRACKING NUMBER SECTION -->
 <section id="tracking">
   <div class="card">
     <h2>Generate Tracking Number</h2>
@@ -171,19 +172,24 @@ footer {
   </div>
 </section>
 
-<!-- ADD NEW SHIPMENT -->
 <section id="add-shipment">
   <div class="card">
     <h2>Add New Shipment</h2>
     <input id="customer" placeholder="Customer Name">
-    <input id="item" placeholder="Item Purchased">
-    <input id="quantity" placeholder="Quantity" type="number">
+    <select id="item">
+      <option value="">Select Item Purchased</option>
+      <option value="Laptop">Laptop</option>
+      <option value="Phone">Phone</option>
+      <option value="Tablet">Tablet</option>
+      <option value="Camera">Camera</option>
+      <option value="Headphones">Headphones</option>
+    </select>
+    <input id="quantity" placeholder="Quantity" type="number" min="1">
     <button onclick="addShipment()">Add Shipment</button>
     <p class="small">All shipments appear below with estimated delivery.</p>
   </div>
 </section>
 
-<!-- UPCOMING SHIPMENTS -->
 <section id="upcoming">
   <div class="card">
     <h2>Upcoming Shipments</h2>
@@ -191,7 +197,6 @@ footer {
   </div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact">
   <div class="card">
     <h2>Contact Information</h2>
@@ -207,7 +212,6 @@ footer {
 </footer>
 
 <script>
-/* ---------- STORAGE ---------- */
 function getShipments() {
   try {
     return JSON.parse(localStorage.getItem("shipments")) || [];
@@ -221,7 +225,6 @@ function saveShipments(data) {
   localStorage.setItem("shipments", JSON.stringify(data));
 }
 
-/* ---------- TRACKING NUMBER GENERATOR ---------- */
 function generateTrackingNumber() {
   const year = new Date().getFullYear();
   const rand = Math.floor(1000 + Math.random() * 9000);
@@ -243,18 +246,16 @@ function generateTracking() {
   return tracking;
 }
 
-/* ---------- ETA CALCULATION ---------- */
 function calculateETA() {
-  const days = Math.floor(Math.random() * 12) + 3; // 3-14 days
+  const days = Math.floor(Math.random() * 12) + 3;
   const etaDate = new Date();
   etaDate.setDate(etaDate.getDate() + days);
   return etaDate.toDateString();
 }
 
-/* ---------- ADD NEW SHIPMENT ---------- */
 function addShipment() {
   const customer = document.getElementById("customer").value.trim();
-  const item = document.getElementById("item").value.trim();
+  const item = document.getElementById("item").value;
   const quantity = parseInt(document.getElementById("quantity").value);
   const origin = document.getElementById("origin").value.trim();
   const destination = document.getElementById("destination").value.trim();
@@ -288,7 +289,6 @@ function addShipment() {
   renderShipments();
 }
 
-/* ---------- RENDER SHIPMENTS ---------- */
 function renderShipments() {
   const shipments = getShipments();
   const list = document.getElementById("shipmentList");
@@ -310,7 +310,6 @@ function renderShipments() {
   });
 }
 
-/* ---------- INITIAL LOAD ---------- */
 renderShipments();
 </script>
 
