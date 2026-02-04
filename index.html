@@ -108,14 +108,24 @@ footer {
   <p>Shipping Made Simple</p>
 </header>
 
-<!-- TRACKING NUMBER SECTION -->
-<section id="tracking">
+<!-- GENERATE TRACKING NUMBER -->
+<section id="generate-tracking">
   <div class="card">
-    <h2>Track Shipment / Generate Tracking Number</h2>
+    <h2>Generate Tracking Number</h2>
     <input id="trackingOrigin" placeholder="Origin (e.g. Swansea, UK)">
     <input id="trackingDestination" placeholder="Destination (e.g. New York, USA)">
     <button onclick="generateTracking()">Generate Tracking Number</button>
     <p id="trackingNumberDisplay" style="font-size:1.2em;color:#0a1f44;margin-top:10px;"></p>
+  </div>
+</section>
+
+<!-- TRACK SHIPMENT -->
+<section id="track-shipment">
+  <div class="card">
+    <h2>Track Shipment</h2>
+    <input id="trackInput" placeholder="Enter Tracking Number">
+    <button onclick="trackShipment()">Track</button>
+    <div id="trackResult" style="margin-top:15px;"></div>
   </div>
 </section>
 
@@ -183,7 +193,7 @@ function saveShipments(data) {
   localStorage.setItem("shipments", JSON.stringify(data));
 }
 
-// TRACKING NUMBER GENERATOR
+// GENERATE TRACKING NUMBER
 function generateTracking() {
   const origin = document.getElementById("trackingOrigin").value.trim();
   const destination = document.getElementById("trackingDestination").value.trim();
@@ -226,7 +236,6 @@ function addShipment() {
   shipments.push({tracking, customer, item, quantity, origin, destination, eta});
   saveShipments(shipments);
 
-  // CLEAR ADD SHIPMENT FIELDS
   document.getElementById("shipmentCustomer").value = "";
   document.getElementById("shipmentItem").value = "";
   document.getElementById("shipmentQuantity").value = "";
@@ -256,6 +265,36 @@ function renderShipments() {
     `;
     list.appendChild(div);
   });
+}
+
+// TRACK EXISTING SHIPMENT BY TRACKING NUMBER
+function trackShipment() {
+  const input = document.getElementById("trackInput").value.trim();
+  const shipments = getShipments();
+  const resultDiv = document.getElementById("trackResult");
+  resultDiv.innerHTML = "";
+
+  if (!input) {
+    alert("Please enter a tracking number.");
+    return;
+  }
+
+  const shipment = shipments.find(s => s.tracking === input);
+
+  if (!shipment) {
+    resultDiv.innerHTML = `<p style="color:red;">Shipment not found.</p>`;
+    return;
+  }
+
+  resultDiv.innerHTML = `
+    <p><strong>Tracking #:</strong> ${shipment.tracking}</p>
+    <p><strong>Customer:</strong> ${shipment.customer}</p>
+    <p><strong>Item:</strong> ${shipment.item}</p>
+    <p><strong>Quantity:</strong> ${shipment.quantity}</p>
+    <p><strong>Origin:</strong> ${shipment.origin}</p>
+    <p><strong>Destination:</strong> ${shipment.destination}</p>
+    <p><strong>ETA:</strong> ${shipment.eta}</p>
+  `;
 }
 
 renderShipments();
