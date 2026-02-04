@@ -216,6 +216,33 @@ function calculateETA() {
   return etaDate.toDateString();
 }
 
+// COPY TRACKING NUMBER
+function copyTracking() {
+  const trackingText = document.getElementById("trackingNumberDisplay").textContent.replace("Tracking Number: ", "");
+  if (trackingText) {
+    navigator.clipboard.writeText(trackingText)
+      .then(() => alert("Tracking number copied!"))
+      .catch(() => alert("Failed to copy."));
+  }
+}
+
+// UPDATE generateTracking() TO SHOW COPY BUTTON
+function generateTracking() {
+  const origin = document.getElementById("trackingOrigin").value.trim();
+  const destination = document.getElementById("trackingDestination").value.trim();
+
+  if (!origin || !destination) {
+    alert("Please enter both origin and destination.");
+    return;
+  }
+
+  const tracking = `ASC-UK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random()*9000)}`;
+  document.getElementById("trackingNumberDisplay").textContent = `Tracking Number: ${tracking}`;
+  document.getElementById("copyTrackingBtn").style.display = "inline-block"; // show copy button
+  return tracking;
+}
+
+
 // ADD SHIPMENT
 function addShipment() {
   const customer = document.getElementById("shipmentCustomer").value.trim();
