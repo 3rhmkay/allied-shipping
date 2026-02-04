@@ -5,29 +5,27 @@
 <title>Allied Shipping & Security Company</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #1f1f1f; scroll-behavior: smooth;}
-header { background: #0a1f44; color: white; padding: 20px 30px; text-align: center; }
-section { padding: 30px; max-width: 1000px; margin: auto; }
-.card { background: #fff; padding: 20px; margin-top: 20px; border-radius: 8px; border: 2px solid #0a1f44; box-shadow: 0 3px 6px rgba(0,0,0,0.1);}
-h2 { color: #0a1f44; margin-bottom: 15px; }
-input, select, button { width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box; }
-input, select { border: 1px solid #ccc; border-radius: 4px; }
-button { background: #0a1f44; color: white; border: none; cursor: pointer; border-radius: 4px; }
-button:hover { opacity: 0.9; }
-.shipment-list { display: flex; flex-direction: column; gap: 15px; }
-.shipment-item { border: 1px solid #0a1f44; border-radius: 6px; padding: 15px; background: #f9f9f9;}
-.shipment-item:nth-child(even) { background: #e9edf2; }
-.shipment-item p { margin: 5px 0; }
-footer { background: #0a1f44; color: white; text-align: center; padding: 20px; margin-top: 40px;}
-.small { font-size: 0.9em; color: #666;}
-.copy-btn { display: inline-block; margin-left:10px; padding:5px 10px; font-size:0.9em; cursor:pointer; background:#0a1f44; color:white; border:none; border-radius:4px;}
+body { font-family: Arial, sans-serif; margin:0; background:#f4f6f8; color:#1f1f1f; }
+header { background:#0a1f44; color:white; padding:20px 30px; text-align:center; }
+section { padding:30px; max-width:1000px; margin:auto; }
+.card { background:#fff; padding:20px; margin-top:20px; border-radius:8px; border:2px solid #0a1f44; box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+h2 { color:#0a1f44; margin-bottom:15px; }
+input, select, button { width:100%; padding:10px; margin-top:10px; box-sizing:border-box; }
+input, select { border:1px solid #ccc; border-radius:4px; }
+button { background:#0a1f44; color:white; border:none; cursor:pointer; border-radius:4px; }
+button:hover { opacity:0.9; }
+.shipment-list { display:flex; flex-direction:column; gap:15px; margin-top:15px;}
+.shipment-item { border:1px solid #0a1f44; border-radius:6px; padding:15px; background:#f9f9f9;}
+.shipment-item:nth-child(even){background:#e9edf2;}
+footer { background:#0a1f44; color:white; text-align:center; padding:20px; margin-top:40px;}
+.copy-btn { display:inline-block; margin-left:10px; padding:5px 10px; font-size:0.9em; cursor:pointer; background:#0a1f44; color:white; border:none; border-radius:4px;}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Allied Shipping & Security Company</h1>
-  <p>Shipping Made Simple</p>
+<h1>Allied Shipping & Security Company</h1>
+<p>Shipping Made Simple</p>
 </header>
 
 <!-- GENERATE TRACKING NUMBER -->
@@ -100,89 +98,59 @@ footer { background: #0a1f44; color: white; text-align: center; padding: 20px; m
 </section>
 
 <footer>
-  <p>© 2026 Allied Shipping & Security Company</p>
+<p>© 2026 Allied Shipping & Security Company</p>
 </footer>
 
 <script>
 // ===== STORAGE =====
-function getShipments() {
-  return JSON.parse(localStorage.getItem("shipments") || "[]");
-}
-function saveShipments(shipments) {
-  localStorage.setItem("shipments", JSON.stringify(shipments));
-}
+function getShipments(){ return JSON.parse(localStorage.getItem("shipments") || "[]"); }
+function saveShipments(shipments){ localStorage.setItem("shipments", JSON.stringify(shipments)); }
 
 // ===== ETA =====
-function calculateETA() {
-  const days = Math.floor(Math.random() * 12) + 3;
-  const etaDate = new Date();
-  etaDate.setDate(etaDate.getDate() + days);
-  return etaDate.toDateString();
-}
+function calculateETA(){ const days = Math.floor(Math.random()*12)+3; const etaDate = new Date(); etaDate.setDate(etaDate.getDate()+days); return etaDate.toDateString(); }
 
 // ===== ADD SHIPMENT =====
-function addShipment() {
+function addShipment(){
   const customer = document.getElementById("shipmentCustomer").value.trim();
   const item = document.getElementById("shipmentItem").value;
   const quantity = parseInt(document.getElementById("shipmentQuantity").value);
   const origin = document.getElementById("shipmentOrigin").value.trim();
   const destination = document.getElementById("shipmentDestination").value.trim();
-
-  if (!customer || !item || !quantity || quantity <= 0 || !origin || !destination) {
-    alert("Please fill in all fields correctly.");
-    return;
-  }
-
-  const tracking = `ASC-UK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random()*9000)}`;
-  const shipment = {tracking, customer, item, quantity, origin, destination, eta: calculateETA()};
-  const shipments = getShipments();
-  shipments.push(shipment);
-  saveShipments(shipments);
-  renderShipments();
-
-  document.getElementById("shipmentCustomer").value = "";
-  document.getElementById("shipmentItem").value = "";
-  document.getElementById("shipmentQuantity").value = "";
-  document.getElementById("shipmentOrigin").value = "";
-  document.getElementById("shipmentDestination").value = "";
+  if(!customer || !item || !quantity || quantity<=0 || !origin || !destination){ alert("Please fill in all fields correctly."); return; }
+  const tracking=`ASC-UK-${new Date().getFullYear()}-${Math.floor(1000+Math.random()*9000)}`;
+  const shipment={tracking, customer, item, quantity, origin, destination, eta:calculateETA()};
+  const shipments=getShipments(); shipments.push(shipment); saveShipments(shipments); renderShipments();
+  document.getElementById("shipmentCustomer").value=""; document.getElementById("shipmentItem").value=""; document.getElementById("shipmentQuantity").value=""; document.getElementById("shipmentOrigin").value=""; document.getElementById("shipmentDestination").value="";
 }
 
 // ===== GENERATE TRACKING =====
-function generateTracking() {
-  const origin = document.getElementById("trackingOrigin").value.trim();
-  const destination = document.getElementById("trackingDestination").value.trim();
-  if (!origin || !destination) { alert("Please enter both origin and destination."); return; }
-
-  const tracking = `ASC-UK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random()*9000)}`;
-  document.getElementById("trackingNumberDisplay").textContent = `Tracking Number: ${tracking}`;
-  document.getElementById("copyTrackingBtn").style.display = "inline-block";
-
-  // Auto-add shipment
-  const shipment = {tracking, customer:"Generated Shipment", item:"N/A", quantity:1, origin, destination, eta: calculateETA()};
-  const shipments = getShipments();
-  shipments.push(shipment);
-  saveShipments(shipments);
-  renderShipments();
+function generateTracking(){
+  const origin=document.getElementById("trackingOrigin").value.trim();
+  const destination=document.getElementById("trackingDestination").value.trim();
+  if(!origin || !destination){ alert("Please enter both origin and destination."); return; }
+  const tracking=`ASC-UK-${new Date().getFullYear()}-${Math.floor(1000+Math.random()*9000)}`;
+  document.getElementById("trackingNumberDisplay").textContent=`Tracking Number: ${tracking}`;
+  document.getElementById("copyTrackingBtn").style.display="inline-block";
+  const shipment={tracking, customer:"Generated Shipment", item:"N/A", quantity:1, origin, destination, eta:calculateETA()};
+  const shipments=getShipments(); shipments.push(shipment); saveShipments(shipments); renderShipments();
 }
 
 // ===== COPY TRACKING =====
-function copyTracking() {
-  const trackingText = document.getElementById("trackingNumberDisplay").textContent.replace("Tracking Number: ", "");
+function copyTracking(){
+  const trackingText=document.getElementById("trackingNumberDisplay").textContent.replace("Tracking Number: ","");
   if(trackingText) navigator.clipboard.writeText(trackingText).then(()=>alert("Tracking number copied!"));
 }
 
 // ===== TRACK SHIPMENT =====
-function trackShipment() {
-  const input = document.getElementById("trackInput").value.trim();
-  const shipments = getShipments();
-  const resultDiv = document.getElementById("trackResult");
-  resultDiv.innerHTML = "";
-  if (!input) { alert("Enter a tracking number."); return; }
-
-  const shipment = shipments.find(s=>s.tracking===input);
-  if (!shipment) { resultDiv.innerHTML = `<p style="color:red;">Shipment not found.</p>`; return; }
-
-  resultDiv.innerHTML = `
+function trackShipment(){
+  const input=document.getElementById("trackInput").value.trim();
+  const shipments=getShipments();
+  const resultDiv=document.getElementById("trackResult");
+  resultDiv.innerHTML="";
+  if(!input){ alert("Enter a tracking number."); return; }
+  const shipment=shipments.find(s=>s.tracking===input);
+  if(!shipment){ resultDiv.innerHTML=`<p style="color:red;">Shipment not found.</p>`; return; }
+  resultDiv.innerHTML=`
     <p><strong>Tracking #:</strong> ${shipment.tracking}</p>
     <p><strong>Customer:</strong> ${shipment.customer}</p>
     <p><strong>Item:</strong> ${shipment.item}</p>
@@ -193,14 +161,12 @@ function trackShipment() {
   `;
 }
 
-// ===== RENDER UPCOMING =====
-function renderShipments() {
-  const shipments = getShipments();
-  const list = document.getElementById("shipmentList");
-  list.innerHTML = "";
+// ===== RENDER SHIPMENTS =====
+function renderShipments(){
+  const shipments=getShipments();
+  const list=document.getElementById("shipmentList"); list.innerHTML="";
   shipments.forEach(s=>{
-    const div=document.createElement("div");
-    div.className="shipment-item";
+    const div=document.createElement("div"); div.className="shipment-item";
     div.innerHTML=`
       <p><strong>Tracking #:</strong> ${s.tracking}</p>
       <p><strong>Customer:</strong> ${s.customer}</p>
