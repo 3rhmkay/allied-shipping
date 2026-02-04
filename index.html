@@ -36,6 +36,7 @@ section {
 
 h2 {
   color: #0a1f44;
+  margin-bottom: 15px;
 }
 
 input, button {
@@ -65,14 +66,24 @@ button:hover {
   opacity: 0.9;
 }
 
-.timeline {
-  border-left: 3px solid #0a1f44;
-  padding-left: 15px;
-  margin-top: 15px;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.timeline div {
-  margin-bottom: 10px;
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #0a1f44;
+  color: white;
+}
+
+td {
+  background: #f9f9f9;
 }
 
 footer {
@@ -94,26 +105,35 @@ footer {
 
 <header>
   <h1>Allied Shipping & Security Company</h1>
-  <p>Secure • Reliable • Global Logistics</p>
+  <p>Shipment Dashboard</p>
 </header>
 
 <section>
 
-  <!-- TRACK SHIPMENT -->
+  <!-- GENERATE NEW SHIPMENT -->
   <div class="card">
-    <h2>Track Your Shipment</h2>
-    <input id="trackInput" placeholder="Enter Tracking Number">
-    <button onclick="trackShipment()">Track Shipment</button>
-    <div id="trackResult"></div>
+    <h2>Create New Shipment</h2>
+    <input id="customer" placeholder="Customer Name">
+    <input id="item" placeholder="Item Purchased">
+    <input id="quantity" placeholder="Quantity" type="number">
+    <button onclick="generateShipment()">Add Shipment</button>
+    <p class="small">All shipments will appear below with estimated delivery.</p>
   </div>
 
-  <!-- GENERATE TRACKING NUMBER -->
+  <!-- SHIPMENT LIST -->
   <div class="card">
-    <h2>Generate Tracking Number</h2>
-    <input id="origin" placeholder="Origin (e.g. Swansea, UK)">
-    <input id="destination" placeholder="Destination (e.g. New York, USA)">
-    <button onclick="generateShipment()">Generate Tracking Number</button>
-    <div id="generatedResult"></div>
+    <h2>Upcoming Shipments</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Estimated Arrival</th>
+        </tr>
+      </thead>
+      <tbody id="shipmentList"></tbody>
+    </table>
   </div>
 
   <!-- CONTACT -->
@@ -135,10 +155,10 @@ footer {
 /* ---------- STORAGE ---------- */
 function getShipments() {
   try {
-    return JSON.parse(localStorage.getItem("shipments")) || {};
+    return JSON.parse(localStorage.getItem("shipments")) || [];
   } catch {
     localStorage.removeItem("shipments");
-    return {};
+    return [];
   }
 }
 
@@ -146,123 +166,63 @@ function saveShipments(data) {
   localStorage.setItem("shipments", JSON.stringify(data));
 }
 
-/* ---------- TRACKING NUMBER ---------- */
-function generateTrackingNumber() {
-  const year = new Date().getFullYear();
-  const rand = Math.floor(1000 + Math.random() * 9000);
-  return `ASC-UK-${year}-${rand}`;
-}
-
-/* ---------- ESTIMATED TIME ---------- */
-function calculateETA(origin, destination) {
-  const isInternational = !origin.toLowerCase().includes("uk") ||
-                          !destination.toLowerCase().includes("uk");
-  const days = isInternational
-    ? Math.floor(Math.random() * 7) + 7   // 7–14 days
-    : Math.floor(Math.random() * 3) + 3;  // 3–5 days
-
+/* ---------- ETA CALCULATION ---------- */
+function calculateETA() {
+  // Random 3-14 days
+  const days = Math.floor(Math.random() * 12) + 3;
   const etaDate = new Date();
   etaDate.setDate(etaDate.getDate() + days);
-
-  return {
-    days,
-    date: etaDate.toDateString()
-  };
+  return etaDate.toDateString();
 }
 
-/* ---------- CREATE SHIPMENT ---------- */
+/* ---------- GENERATE SHIPMENT ---------- */
 function generateShipment() {
-  const originInput = document.getElementById("origin");
-  const destinationInput = document.getElementById("destination");
-  const origin = originInput.value.trim();
-  const destination = destinationInput.value.trim();
+  const customer = document.getElementById("customer").value.trim();
+  const item = document.getElementById("item").value.trim();
+  const quantity = parseInt(document.getElementById("quantity").value);
 
-  if (!origin || !destination) {
-    alert("Please enter both origin and destination.");
+  if (!customer || !item || !quantity || quantity <= 0) {
+    alert("Please fill in all fields with valid values.");
     return;
   }
 
   const shipments = getShipments();
-  let tracking;
 
-  do {
-    tracking = generateTrackingNumber();
-  } while (shipments[tracking]);
-
-  const eta = calculateETA(origin, destination);
-
-  shipments[tracking] = {
-    origin,
-    destination,
-    status: "Created",
-    security: "High",
-    eta,
-    updates: [{
-      date: new Date().toLocaleString(),
-      message: "Shipment created"
-    }]
-  };
+  shipments.push({
+    customer,
+    item,
+    quantity,
+    eta: calculateETA()
+  });
 
   saveShipments(shipments);
+  document.getElementById("customer").value = "";
+  document.getElementById("item").value = "";
+  document.getElementById("quantity").value = "";
 
-  originInput.value = "";
-  destinationInput.value = "";
-
-  document.getElementById("generatedResult").innerHTML = `
-    <p><strong>Tracking Number:</strong></p>
-    <p id="trackingCode" style="font-size:1.2em;color:#0a1f44">
-      <strong>${tracking}</strong>
-    </p>
-    <button class="secondary" onclick="copyTracking()">📋 Copy Tracking Number</button>
-    <p class="small" id="copyStatus"></p>
-    <p><strong>Estimated Delivery:</strong> ${eta.date} (${eta.days} days)</p>
-  `;
+  renderShipments();
 }
 
-/* ---------- COPY ---------- */
-function copyTracking() {
-  const text = document.getElementById("trackingCode").innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    document.getElementById("copyStatus").innerText = "Copied to clipboard ✔";
+/* ---------- RENDER SHIPMENTS ---------- */
+function renderShipments() {
+  const shipments = getShipments();
+  const tableBody = document.getElementById("shipmentList");
+  tableBody.innerHTML = "";
+
+  shipments.forEach(s => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${s.customer}</td>
+      <td>${s.item}</td>
+      <td>${s.quantity}</td>
+      <td>${s.eta}</td>
+    `;
+    tableBody.appendChild(row);
   });
 }
 
-/* ---------- TRACK SHIPMENT ---------- */
-function trackShipment() {
-  const id = document.getElementById("trackInput").value.trim();
-  const result = document.getElementById("trackResult");
-
-  if (!id) {
-    result.innerHTML = "<p style='color:red'>Please enter a tracking number.</p>";
-    return;
-  }
-
-  const shipments = getShipments();
-  const s = shipments[id];
-
-  if (!s) {
-    result.innerHTML = "<p style='color:red'>Tracking number not found.</p>";
-    return;
-  }
-
-  result.innerHTML = `
-    <p><strong>Status:</strong> ${s.status}</p>
-    <p><strong>From:</strong> ${s.origin}</p>
-    <p><strong>To:</strong> ${s.destination}</p>
-    <p><strong>Security Level:</strong> ${s.security}</p>
-    <p><strong>Estimated Delivery:</strong> ${s.eta.date} (${s.eta.days} days)</p>
-
-    <h3>Shipment Timeline</h3>
-    <div class="timeline">
-      ${s.updates.map(u => `
-        <div>
-          <strong>${u.date}</strong><br>
-          ${u.message}
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
+/* ---------- INITIAL LOAD ---------- */
+renderShipments();
 </script>
 
 </body>
