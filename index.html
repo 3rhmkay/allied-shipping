@@ -153,6 +153,23 @@ function generateTrackingNumber() {
   return `ASC-UK-${year}-${rand}`;
 }
 
+/* ---------- ESTIMATED TIME ---------- */
+function calculateETA(origin, destination) {
+  const isInternational = !origin.toLowerCase().includes("uk") ||
+                          !destination.toLowerCase().includes("uk");
+  const days = isInternational
+    ? Math.floor(Math.random() * 7) + 7   // 7–14 days
+    : Math.floor(Math.random() * 3) + 3;  // 3–5 days
+
+  const etaDate = new Date();
+  etaDate.setDate(etaDate.getDate() + days);
+
+  return {
+    days,
+    date: etaDate.toDateString()
+  };
+}
+
 /* ---------- CREATE SHIPMENT ---------- */
 function generateShipment() {
   const originInput = document.getElementById("origin");
@@ -172,11 +189,14 @@ function generateShipment() {
     tracking = generateTrackingNumber();
   } while (shipments[tracking]);
 
+  const eta = calculateETA(origin, destination);
+
   shipments[tracking] = {
     origin,
     destination,
     status: "Created",
     security: "High",
+    eta,
     updates: [{
       date: new Date().toLocaleString(),
       message: "Shipment created"
@@ -195,6 +215,7 @@ function generateShipment() {
     </p>
     <button class="secondary" onclick="copyTracking()">📋 Copy Tracking Number</button>
     <p class="small" id="copyStatus"></p>
+    <p><strong>Estimated Delivery:</strong> ${eta.date} (${eta.days} days)</p>
   `;
 }
 
@@ -229,6 +250,7 @@ function trackShipment() {
     <p><strong>From:</strong> ${s.origin}</p>
     <p><strong>To:</strong> ${s.destination}</p>
     <p><strong>Security Level:</strong> ${s.security}</p>
+    <p><strong>Estimated Delivery:</strong> ${s.eta.date} (${s.eta.days} days)</p>
 
     <h3>Shipment Timeline</h3>
     <div class="timeline">
