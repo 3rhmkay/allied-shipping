@@ -33,7 +33,6 @@ section {
   border-radius: 8px;
   border: 2px solid #0a1f44;
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  overflow-x: auto;
 }
 
 h2 {
@@ -71,51 +70,25 @@ button:hover {
   opacity: 0.9;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+.shipment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-th, td {
+.shipment-item {
   border: 1px solid #0a1f44;
-  padding: 12px 8px;
-  text-align: left;
-}
-
-th {
-  background: #0a1f44;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-td {
+  border-radius: 6px;
+  padding: 15px;
   background: #f9f9f9;
-  word-wrap: break-word;
 }
 
-tbody tr:nth-child(even) td {
+.shipment-item:nth-child(even) {
   background: #e9edf2;
 }
 
-table thead, table tbody {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-table tbody {
-  display: block;
-  max-height: 300px; /* Makes table scrollable if too many rows */
-  overflow-y: auto;
-}
-
-table thead tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
+.shipment-item p {
+  margin: 5px 0;
 }
 
 footer {
@@ -164,20 +137,7 @@ footer {
   <!-- UPCOMING SHIPMENTS -->
   <div class="card">
     <h2>Upcoming Shipments</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Tracking #</th>
-          <th>Customer</th>
-          <th>Item</th>
-          <th>Qty</th>
-          <th>Origin</th>
-          <th>Destination</th>
-          <th>ETA</th>
-        </tr>
-      </thead>
-      <tbody id="shipmentList"></tbody>
-    </table>
+    <div id="shipmentList" class="shipment-list"></div>
   </div>
 
   <!-- CONTACT -->
@@ -278,24 +238,25 @@ function addShipment() {
   renderShipments();
 }
 
-/* ---------- RENDER SHIPMENTS ---------- */
+/* ---------- RENDER SHIPMENTS AS LIST ---------- */
 function renderShipments() {
   const shipments = getShipments();
-  const tableBody = document.getElementById("shipmentList");
-  tableBody.innerHTML = "";
+  const list = document.getElementById("shipmentList");
+  list.innerHTML = "";
 
   shipments.forEach(s => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${s.tracking}</td>
-      <td>${s.customer}</td>
-      <td>${s.item}</td>
-      <td>${s.quantity}</td>
-      <td>${s.origin}</td>
-      <td>${s.destination}</td>
-      <td>${s.eta}</td>
+    const div = document.createElement("div");
+    div.className = "shipment-item";
+    div.innerHTML = `
+      <p><strong>Tracking #:</strong> ${s.tracking}</p>
+      <p><strong>Customer:</strong> ${s.customer}</p>
+      <p><strong>Item:</strong> ${s.item}</p>
+      <p><strong>Quantity:</strong> ${s.quantity}</p>
+      <p><strong>Origin:</strong> ${s.origin}</p>
+      <p><strong>Destination:</strong> ${s.destination}</p>
+      <p><strong>ETA:</strong> ${s.eta}</p>
     `;
-    tableBody.appendChild(row);
+    list.appendChild(div);
   });
 }
 
