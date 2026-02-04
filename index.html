@@ -6,20 +6,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+/* ---------- GENERAL ---------- */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   background: #f4f6f8;
   color: #1f1f1f;
+  scroll-behavior: smooth;
 }
 
 header {
   background: #0a1f44;
   color: white;
-  padding: 30px;
+  padding: 20px 30px;
   text-align: center;
 }
 
+/* ---------- NAVBAR ---------- */
+nav {
+  background: #0a1f44;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- SECTIONS ---------- */
 section {
   padding: 30px;
   max-width: 1000px;
@@ -40,6 +65,7 @@ h2 {
   margin-bottom: 15px;
 }
 
+/* ---------- INPUTS & BUTTONS ---------- */
 input, button {
   width: 100%;
   padding: 10px;
@@ -60,16 +86,11 @@ button {
   border-radius: 4px;
 }
 
-button.secondary {
-  background: transparent;
-  color: #0a1f44;
-  border: 1px solid #0a1f44;
-}
-
 button:hover {
   opacity: 0.9;
 }
 
+/* ---------- SHIPMENTS LIST ---------- */
 .shipment-list {
   display: flex;
   flex-direction: column;
@@ -91,6 +112,7 @@ button:hover {
   margin: 5px 0;
 }
 
+/* ---------- FOOTER ---------- */
 footer {
   background: #0a1f44;
   color: white;
@@ -103,6 +125,14 @@ footer {
   font-size: 0.9em;
   color: #666;
 }
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:600px){
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
 </style>
 </head>
 
@@ -110,12 +140,28 @@ footer {
 
 <header>
   <h1>Allied Shipping & Security Company</h1>
-  <p>Shipment Dashboard</p>
+  <p>Shipping Made Simple</p>
 </header>
 
-<section>
+<!-- NAVIGATION -->
+<nav>
+  <a href="#about">About</a>
+  <a href="#tracking">Tracking Number</a>
+  <a href="#add-shipment">Add Shipment</a>
+  <a href="#upcoming">Upcoming Shipments</a>
+  <a href="#contact">Contact</a>
+</nav>
 
-  <!-- GENERATE TRACKING NUMBER -->
+<!-- ABOUT SECTION -->
+<section id="about">
+  <div class="card">
+    <h2>About Us</h2>
+    <p>Allied Shipping & Security Company specializes in secure and reliable shipment services between the UK and USA. Our goal is to make shipping simple, transparent, and trustworthy for all our clients.</p>
+  </div>
+</section>
+
+<!-- TRACKING NUMBER SECTION -->
+<section id="tracking">
   <div class="card">
     <h2>Generate Tracking Number</h2>
     <input id="origin" placeholder="Origin (e.g. Swansea, UK)">
@@ -123,8 +169,10 @@ footer {
     <button onclick="generateTracking()">Generate Tracking Number</button>
     <p id="trackingNumberDisplay" style="font-size:1.2em;color:#0a1f44;margin-top:10px;"></p>
   </div>
+</section>
 
-  <!-- ADD NEW SHIPMENT -->
+<!-- ADD NEW SHIPMENT -->
+<section id="add-shipment">
   <div class="card">
     <h2>Add New Shipment</h2>
     <input id="customer" placeholder="Customer Name">
@@ -133,14 +181,18 @@ footer {
     <button onclick="addShipment()">Add Shipment</button>
     <p class="small">All shipments appear below with estimated delivery.</p>
   </div>
+</section>
 
-  <!-- UPCOMING SHIPMENTS -->
+<!-- UPCOMING SHIPMENTS -->
+<section id="upcoming">
   <div class="card">
     <h2>Upcoming Shipments</h2>
     <div id="shipmentList" class="shipment-list"></div>
   </div>
+</section>
 
-  <!-- CONTACT -->
+<!-- CONTACT -->
+<section id="contact">
   <div class="card">
     <h2>Contact Information</h2>
     <p>Email: alliedscpan78@gmail.com</p>
@@ -148,7 +200,6 @@ footer {
     <p>US Branch: +1 (912) 309-3156</p>
     <p>Location: Swansea, UK</p>
   </div>
-
 </section>
 
 <footer>
@@ -177,7 +228,6 @@ function generateTrackingNumber() {
   return `ASC-UK-${year}-${rand}`;
 }
 
-/* ---------- GENERATE TRACKING USING ORIGIN/DEST ---------- */
 function generateTracking() {
   const originInput = document.getElementById("origin").value.trim();
   const destinationInput = document.getElementById("destination").value.trim();
@@ -238,7 +288,7 @@ function addShipment() {
   renderShipments();
 }
 
-/* ---------- RENDER SHIPMENTS AS LIST ---------- */
+/* ---------- RENDER SHIPMENTS ---------- */
 function renderShipments() {
   const shipments = getShipments();
   const list = document.getElementById("shipmentList");
