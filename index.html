@@ -30,8 +30,9 @@ section {
   background: #ffffff;
   padding: 20px;
   margin-top: 20px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  border: 2px solid #0a1f44; /* adjusted border thickness and color */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
 
 h2 {
@@ -43,10 +44,12 @@ input, button {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
+  box-sizing: border-box;
 }
 
 input {
   border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 button {
@@ -54,6 +57,7 @@ button {
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 button.secondary {
@@ -69,12 +73,14 @@ button:hover {
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 15px;
 }
 
 th, td {
-  border: 1px solid #ccc;
+  border: 1px solid #0a1f44;
   padding: 10px;
   text-align: left;
+  border-radius: 4px;
 }
 
 th {
@@ -110,22 +116,31 @@ footer {
 
 <section>
 
-  <!-- GENERATE NEW SHIPMENT -->
+  <!-- GENERATE TRACKING NUMBER -->
   <div class="card">
-    <h2>Create New Shipment</h2>
+    <h2>Generate Tracking Number</h2>
+    <button onclick="generateTrackingNumber()">Generate</button>
+    <p id="trackingNumberDisplay" style="font-size:1.2em;color:#0a1f44;margin-top:10px;"></p>
+  </div>
+
+  <!-- ADD NEW SHIPMENT -->
+  <div class="card">
+    <h2>Add New Shipment</h2>
     <input id="customer" placeholder="Customer Name">
     <input id="item" placeholder="Item Purchased">
     <input id="quantity" placeholder="Quantity" type="number">
-    <button onclick="generateShipment()">Add Shipment</button>
-    <p class="small">All shipments will appear below with estimated delivery.</p>
+    <button onclick="addShipment()">Add Shipment</button>
+    <p class="small">All shipments appear below with estimated delivery.</p>
+    <button class="secondary" onclick="downloadJSON()">Download JSON File</button>
   </div>
 
-  <!-- SHIPMENT LIST -->
+  <!-- UPCOMING SHIPMENTS -->
   <div class="card">
     <h2>Upcoming Shipments</h2>
     <table>
       <thead>
         <tr>
+          <th>Tracking #</th>
           <th>Customer</th>
           <th>Item</th>
           <th>Quantity</th>
@@ -166,33 +181,44 @@ function saveShipments(data) {
   localStorage.setItem("shipments", JSON.stringify(data));
 }
 
+/* ---------- TRACKING NUMBER GENERATOR ---------- */
+function generateTrackingNumber() {
+  const year = new Date().getFullYear();
+  const rand = Math.floor(1000 + Math.random() * 9000);
+  const tracking = `ASC-UK-${year}-${rand}`;
+  document.getElementById("trackingNumberDisplay").textContent = tracking;
+  return tracking;
+}
+
 /* ---------- ETA CALCULATION ---------- */
 function calculateETA() {
-  // Random 3-14 days
-  const days = Math.floor(Math.random() * 12) + 3;
+  const days = Math.floor(Math.random() * 12) + 3; // 3-14 days
   const etaDate = new Date();
   etaDate.setDate(etaDate.getDate() + days);
   return etaDate.toDateString();
 }
 
-/* ---------- GENERATE SHIPMENT ---------- */
-function generateShipment() {
+/* ---------- ADD NEW SHIPMENT ---------- */
+function addShipment() {
   const customer = document.getElementById("customer").value.trim();
   const item = document.getElementById("item").value.trim();
   const quantity = parseInt(document.getElementById("quantity").value);
 
   if (!customer || !item || !quantity || quantity <= 0) {
-    alert("Please fill in all fields with valid values.");
+    alert("Please fill in all fields correctly.");
     return;
   }
 
   const shipments = getShipments();
+  const tracking = generateTrackingNumber();
+  const eta = calculateETA();
 
   shipments.push({
+    tracking,
     customer,
     item,
     quantity,
-    eta: calculateETA()
+    eta
   });
 
   saveShipments(shipments);
@@ -212,6 +238,7 @@ function renderShipments() {
   shipments.forEach(s => {
     const row = document.createElement("tr");
     row.innerHTML = `
+      <td>${s.tracking}</td>
       <td>${s.customer}</td>
       <td>${s.item}</td>
       <td>${s.quantity}</td>
@@ -219,6 +246,16 @@ function renderShipments() {
     `;
     tableBody.appendChild(row);
   });
+}
+
+/* ---------- DOWNLOAD JSON FILE ---------- */
+function downloadJSON() {
+  const shipments = getShipments();
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(shipments, null, 2));
+  const dlAnchor = document.createElement('a');
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download", "shipments.json");
+  dlAnchor.click();
 }
 
 /* ---------- INITIAL LOAD ---------- */
