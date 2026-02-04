@@ -22,7 +22,7 @@ header {
 
 section {
   padding: 30px;
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
 }
 
@@ -31,8 +31,9 @@ section {
   padding: 20px;
   margin-top: 20px;
   border-radius: 8px;
-  border: 2px solid #0a1f44; /* adjusted border thickness and color */
+  border: 2px solid #0a1f44;
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  overflow-x: auto;
 }
 
 h2 {
@@ -74,13 +75,14 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
+  table-layout: fixed;
+  word-wrap: break-word;
 }
 
 th, td {
   border: 1px solid #0a1f44;
   padding: 10px;
   text-align: left;
-  border-radius: 4px;
 }
 
 th {
@@ -119,7 +121,9 @@ footer {
   <!-- GENERATE TRACKING NUMBER -->
   <div class="card">
     <h2>Generate Tracking Number</h2>
-    <button onclick="generateTrackingNumber()">Generate</button>
+    <input id="origin" placeholder="Origin (e.g. Swansea, UK)">
+    <input id="destination" placeholder="Destination (e.g. New York, USA)">
+    <button onclick="generateTracking()">Generate Tracking Number</button>
     <p id="trackingNumberDisplay" style="font-size:1.2em;color:#0a1f44;margin-top:10px;"></p>
   </div>
 
@@ -140,11 +144,13 @@ footer {
     <table>
       <thead>
         <tr>
-          <th>Tracking #</th>
-          <th>Customer</th>
-          <th>Item</th>
-          <th>Quantity</th>
-          <th>Estimated Arrival</th>
+          <th style="width:15%">Tracking #</th>
+          <th style="width:20%">Customer</th>
+          <th style="width:20%">Item</th>
+          <th style="width:10%">Quantity</th>
+          <th style="width:20%">Origin</th>
+          <th style="width:20%">Destination</th>
+          <th style="width:15%">ETA</th>
         </tr>
       </thead>
       <tbody id="shipmentList"></tbody>
@@ -185,8 +191,22 @@ function saveShipments(data) {
 function generateTrackingNumber() {
   const year = new Date().getFullYear();
   const rand = Math.floor(1000 + Math.random() * 9000);
-  const tracking = `ASC-UK-${year}-${rand}`;
-  document.getElementById("trackingNumberDisplay").textContent = tracking;
+  return `ASC-UK-${year}-${rand}`;
+}
+
+/* ---------- GENERATE TRACKING USING ORIGIN/DEST ---------- */
+function generateTracking() {
+  const originInput = document.getElementById("origin").value.trim();
+  const destinationInput = document.getElementById("destination").value.trim();
+
+  if (!originInput || !destinationInput) {
+    alert("Please enter both origin and destination.");
+    return;
+  }
+
+  const tracking = generateTrackingNumber();
+  document.getElementById("trackingNumberDisplay").textContent =
+    `Tracking Number: ${tracking}`;
   return tracking;
 }
 
@@ -203,8 +223,10 @@ function addShipment() {
   const customer = document.getElementById("customer").value.trim();
   const item = document.getElementById("item").value.trim();
   const quantity = parseInt(document.getElementById("quantity").value);
+  const origin = document.getElementById("origin").value.trim();
+  const destination = document.getElementById("destination").value.trim();
 
-  if (!customer || !item || !quantity || quantity <= 0) {
+  if (!customer || !item || !quantity || quantity <= 0 || !origin || !destination) {
     alert("Please fill in all fields correctly.");
     return;
   }
@@ -218,13 +240,19 @@ function addShipment() {
     customer,
     item,
     quantity,
+    origin,
+    destination,
     eta
   });
 
   saveShipments(shipments);
+
   document.getElementById("customer").value = "";
   document.getElementById("item").value = "";
   document.getElementById("quantity").value = "";
+  document.getElementById("origin").value = "";
+  document.getElementById("destination").value = "";
+  document.getElementById("trackingNumberDisplay").textContent = "";
 
   renderShipments();
 }
@@ -242,6 +270,8 @@ function renderShipments() {
       <td>${s.customer}</td>
       <td>${s.item}</td>
       <td>${s.quantity}</td>
+      <td>${s.origin}</td>
+      <td>${s.destination}</td>
       <td>${s.eta}</td>
     `;
     tableBody.appendChild(row);
