@@ -4,82 +4,147 @@
 <meta charset="UTF-8">
 <title>Allied Shipping & Security Company</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body { font-family: Arial, sans-serif; margin:0; background:#f4f6f8; color:#1f1f1f; }
-header { background:#0a1f44; color:white; padding:20px 30px; text-align:center; }
-section { padding:30px; max-width:1000px; margin:auto; }
-.card { background:#fff; padding:20px; margin-top:20px; border-radius:8px; border:2px solid #0a1f44; box-shadow:0 3px 6px rgba(0,0,0,0.1);}
-h2 { color:#0a1f44; margin-bottom:15px; }
-input, select, button { width:100%; padding:10px; margin-top:10px; box-sizing:border-box; }
-input, select { border:1px solid #ccc; border-radius:4px; }
-button { background:#0a1f44; color:white; border:none; cursor:pointer; border-radius:4px; }
-button:hover { opacity:0.9; }
-.shipment-list { display:flex; flex-direction:column; gap:15px; margin-top:15px;}
-.shipment-item { border:1px solid #0a1f44; border-radius:6px; padding:15px; background:#f9f9f9;}
-.shipment-item:nth-child(even){background:#e9edf2;}
-footer { background:#0a1f44; color:white; text-align:center; padding:20px; margin-top:40px;}
-.copy-btn { display:inline-block; margin-left:10px; padding:5px 10px; font-size:0.9em; cursor:pointer; background:#0a1f44; color:white; border:none; border-radius:4px;}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f8;
+  color: #1f1f1f;
+}
+
+header {
+  background: #0a1f44;
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+section {
+  padding: 30px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.card {
+  background: #ffffff;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+h2 {
+  color: #0a1f44;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+input, select {
+  border: 1px solid #ccc;
+}
+
+button {
+  background: #0a1f44;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  color: #0a1f44;
+  border: 1px solid #0a1f44;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.timeline {
+  border-left: 3px solid #0a1f44;
+  padding-left: 15px;
+  margin-top: 15px;
+}
+
+.timeline div {
+  margin-bottom: 10px;
+}
+
+.shipment {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+footer {
+  background: #0a1f44;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.small {
+  font-size: 0.9em;
+  color: #666;
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>Allied Shipping & Security Company</h1>
-<p>Shipping Made Simple</p>
+  <h1>Allied Shipping & Security Company</h1>
+  <p>Secure • Reliable • Global Logistics</p>
 </header>
 
-<!-- GENERATE TRACKING NUMBER -->
-<section id="generate-tracking">
+<section>
+
+  <!-- TRACK SHIPMENT -->
+  <div class="card">
+    <h2>Track Your Shipment</h2>
+    <input id="trackInput" placeholder="Enter Tracking Number">
+    <button onclick="trackShipment()">Track Shipment</button>
+    <div id="trackResult"></div>
+  </div>
+
+  <!-- GENERATE TRACKING -->
   <div class="card">
     <h2>Generate Tracking Number</h2>
-    <input id="trackingOrigin" placeholder="Origin (e.g. Swansea, UK)">
-    <input id="trackingDestination" placeholder="Destination (e.g. New York, USA)">
-    <button onclick="generateTracking()">Generate Tracking Number</button>
-    <div style="margin-top:10px;">
-      <span id="trackingNumberDisplay" style="font-size:1.2em;color:#0a1f44;"></span>
-      <button id="copyTrackingBtn" class="copy-btn" onclick="copyTracking()" style="display:none;">Copy</button>
-    </div>
+    <input id="origin" placeholder="Origin (e.g. Swansea, UK)">
+    <input id="destination" placeholder="Destination (e.g. New York, USA)">
+    <button onclick="generateShipment()">Generate Tracking Number</button>
+    <div id="generatedResult"></div>
   </div>
-</section>
 
-<!-- TRACK SHIPMENT -->
-<section id="track-shipment">
+  <!-- ADD SHIPMENT -->
   <div class="card">
-    <h2>Track Shipment</h2>
-    <input id="trackInput" placeholder="Enter Tracking Number">
-    <button onclick="trackShipment()">Track</button>
-    <div id="trackResult" style="margin-top:15px;"></div>
-  </div>
-</section>
-
-<!-- ADD SHIPMENT -->
-<section id="add-shipment">
-  <div class="card">
-    <h2>Add New Shipment</h2>
-    <input id="shipmentCustomer" placeholder="Customer Name">
-    <select id="shipmentItem">
-      <option value="">Select Item Purchased</option>
-      <option value="Goods">Goods</option>
-      <option value="Services">Services</option>
+    <h2>Add Shipment</h2>
+    <input id="customer" placeholder="Customer Name">
+    <select id="item">
+      <option value="">Select Item</option>
+      <option>Goods</option>
+      <option>Services</option>
     </select>
-    <input id="shipmentQuantity" placeholder="Quantity" type="number" min="1">
-    <input id="shipmentOrigin" placeholder="Origin (e.g. Swansea, UK)">
-    <input id="shipmentDestination" placeholder="Destination (e.g. New York, USA)">
+    <input id="quantity" type="number" min="1" placeholder="Quantity">
+    <input id="addOrigin" placeholder="Origin">
+    <input id="addDestination" placeholder="Destination">
     <button onclick="addShipment()">Add Shipment</button>
-    <p class="small">All shipments appear below with estimated delivery.</p>
   </div>
-</section>
 
-<!-- UPCOMING SHIPMENTS -->
-<section id="upcoming">
+  <!-- UPCOMING SHIPMENTS -->
   <div class="card">
     <h2>Upcoming Shipments</h2>
-    <div id="shipmentList" class="shipment-list"></div>
+    <div id="shipmentList"></div>
   </div>
-</section>
 
-<!-- CONTACT -->
-<section id="contact">
+  <!-- CONTACT -->
   <div class="card">
     <h2>Contact Information</h2>
     <p>Email: alliedscpan78@gmail.com</p>
@@ -87,100 +152,117 @@ footer { background:#0a1f44; color:white; text-align:center; padding:20px; margi
     <p>US Branch: +1 (912) 309-3156</p>
     <p>Location: Swansea, UK</p>
   </div>
-</section>
 
-<!-- ABOUT US -->
-<section id="about">
-  <div class="card">
-    <h2>About Us</h2>
-    <p>Allied Shipping & Security Company specializes in secure and reliable shipment services between the UK and USA. Our goal is to make shipping simple, transparent, and trustworthy for all our clients.</p>
-  </div>
 </section>
 
 <footer>
-<p>© 2026 Allied Shipping & Security Company</p>
+  <p>© 2026 Allied Shipping & Security Company</p>
 </footer>
 
 <script>
-// ===== STORAGE =====
-function getShipments(){ return JSON.parse(localStorage.getItem("shipments") || "[]"); }
-function saveShipments(shipments){ localStorage.setItem("shipments", JSON.stringify(shipments)); }
-
-// ===== ETA =====
-function calculateETA(){ const days = Math.floor(Math.random()*12)+3; const etaDate = new Date(); etaDate.setDate(etaDate.getDate()+days); return etaDate.toDateString(); }
-
-// ===== ADD SHIPMENT =====
-function addShipment(){
-  const customer = document.getElementById("shipmentCustomer").value.trim();
-  const item = document.getElementById("shipmentItem").value;
-  const quantity = parseInt(document.getElementById("shipmentQuantity").value);
-  const origin = document.getElementById("shipmentOrigin").value.trim();
-  const destination = document.getElementById("shipmentDestination").value.trim();
-  if(!customer || !item || !quantity || quantity<=0 || !origin || !destination){ alert("Please fill in all fields correctly."); return; }
-  const tracking=`ASC-UK-${new Date().getFullYear()}-${Math.floor(1000+Math.random()*9000)}`;
-  const shipment={tracking, customer, item, quantity, origin, destination, eta:calculateETA()};
-  const shipments=getShipments(); shipments.push(shipment); saveShipments(shipments); renderShipments();
-  document.getElementById("shipmentCustomer").value=""; document.getElementById("shipmentItem").value=""; document.getElementById("shipmentQuantity").value=""; document.getElementById("shipmentOrigin").value=""; document.getElementById("shipmentDestination").value="";
+/* ---------- STORAGE ---------- */
+function getShipments() {
+  return JSON.parse(localStorage.getItem("shipments") || "{}");
+}
+function saveShipments(data) {
+  localStorage.setItem("shipments", JSON.stringify(data));
 }
 
-// ===== GENERATE TRACKING =====
-function generateTracking(){
-  const origin=document.getElementById("trackingOrigin").value.trim();
-  const destination=document.getElementById("trackingDestination").value.trim();
-  if(!origin || !destination){ alert("Please enter both origin and destination."); return; }
-  const tracking=`ASC-UK-${new Date().getFullYear()}-${Math.floor(1000+Math.random()*9000)}`;
-  document.getElementById("trackingNumberDisplay").textContent=`Tracking Number: ${tracking}`;
-  document.getElementById("copyTrackingBtn").style.display="inline-block";
-  const shipment={tracking, customer:"Generated Shipment", item:"N/A", quantity:1, origin, destination, eta:calculateETA()};
-  const shipments=getShipments(); shipments.push(shipment); saveShipments(shipments); renderShipments();
+/* ---------- TRACKING ---------- */
+function generateTrackingNumber() {
+  return `ASC-UK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
 }
 
-// ===== COPY TRACKING =====
-function copyTracking(){
-  const trackingText=document.getElementById("trackingNumberDisplay").textContent.replace("Tracking Number: ","");
-  if(trackingText) navigator.clipboard.writeText(trackingText).then(()=>alert("Tracking number copied!"));
+/* ---------- ETA ---------- */
+function calculateETA(origin, destination) {
+  const days = (!origin.toLowerCase().includes("uk") || !destination.toLowerCase().includes("uk"))
+    ? Math.floor(Math.random() * 7) + 7
+    : Math.floor(Math.random() * 3) + 3;
+
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return { days, date: d.toDateString() };
 }
 
-// ===== TRACK SHIPMENT =====
-function trackShipment(){
-  const input=document.getElementById("trackInput").value.trim();
-  const shipments=getShipments();
-  const resultDiv=document.getElementById("trackResult");
-  resultDiv.innerHTML="";
-  if(!input){ alert("Enter a tracking number."); return; }
-  const shipment=shipments.find(s=>s.tracking===input);
-  if(!shipment){ resultDiv.innerHTML=`<p style="color:red;">Shipment not found.</p>`; return; }
-  resultDiv.innerHTML=`
-    <p><strong>Tracking #:</strong> ${shipment.tracking}</p>
-    <p><strong>Customer:</strong> ${shipment.customer}</p>
-    <p><strong>Item:</strong> ${shipment.item}</p>
-    <p><strong>Quantity:</strong> ${shipment.quantity}</p>
-    <p><strong>Origin:</strong> ${shipment.origin}</p>
-    <p><strong>Destination:</strong> ${shipment.destination}</p>
-    <p><strong>ETA:</strong> ${shipment.eta}</p>
+/* ---------- GENERATE ---------- */
+function generateShipment() {
+  const origin = document.getElementById("origin").value.trim();
+  const destination = document.getElementById("destination").value.trim();
+  if (!origin || !destination) return alert("Enter origin and destination");
+
+  const shipments = getShipments();
+  let tracking;
+  do { tracking = generateTrackingNumber(); } while (shipments[tracking]);
+
+  shipments[tracking] = {
+    origin, destination,
+    status: "Created",
+    eta: calculateETA(origin, destination),
+    updates: [{ date: new Date().toLocaleString(), message: "Shipment created" }]
+  };
+
+  saveShipments(shipments);
+  renderShipments();
+
+  document.getElementById("generatedResult").innerHTML = `
+    <strong>${tracking}</strong>
+    <button class="secondary" onclick="navigator.clipboard.writeText('${tracking}')">Copy</button>
   `;
 }
 
-// ===== RENDER SHIPMENTS =====
-function renderShipments(){
-  const shipments=getShipments();
-  const list=document.getElementById("shipmentList"); list.innerHTML="";
-  shipments.forEach(s=>{
-    const div=document.createElement("div"); div.className="shipment-item";
-    div.innerHTML=`
-      <p><strong>Tracking #:</strong> ${s.tracking}</p>
-      <p><strong>Customer:</strong> ${s.customer}</p>
-      <p><strong>Item:</strong> ${s.item}</p>
-      <p><strong>Quantity:</strong> ${s.quantity}</p>
-      <p><strong>Origin:</strong> ${s.origin}</p>
-      <p><strong>Destination:</strong> ${s.destination}</p>
-      <p><strong>ETA:</strong> ${s.eta}</p>
-    `;
-    list.appendChild(div);
+/* ---------- ADD SHIPMENT ---------- */
+function addShipment() {
+  const customer = document.getElementById("customer").value.trim();
+  const item = document.getElementById("item").value;
+  const qty = document.getElementById("quantity").value;
+  const origin = document.getElementById("addOrigin").value.trim();
+  const destination = document.getElementById("addDestination").value.trim();
+
+  if (!customer || !item || !qty || !origin || !destination)
+    return alert("Fill all fields");
+
+  const shipments = getShipments();
+  let tracking;
+  do { tracking = generateTrackingNumber(); } while (shipments[tracking]);
+
+  shipments[tracking] = {
+    customer, item, qty,
+    origin, destination,
+    status: "Created",
+    eta: calculateETA(origin, destination),
+    updates: [{ date: new Date().toLocaleString(), message: "Shipment added" }]
+  };
+
+  saveShipments(shipments);
+  renderShipments();
+}
+
+/* ---------- TRACK ---------- */
+function trackShipment() {
+  const id = document.getElementById("trackInput").value.trim();
+  const s = getShipments()[id];
+  document.getElementById("trackResult").innerHTML = s
+    ? `<p><strong>Status:</strong> ${s.status}</p><p><strong>ETA:</strong> ${s.eta.date}</p>`
+    : "<p style='color:red'>Not found</p>";
+}
+
+/* ---------- RENDER ---------- */
+function renderShipments() {
+  const list = document.getElementById("shipmentList");
+  const shipments = getShipments();
+  list.innerHTML = "";
+
+  Object.keys(shipments).forEach(k => {
+    const s = shipments[k];
+    list.innerHTML += `
+      <div class="shipment">
+        <strong>${k}</strong><br>
+        ${s.origin} → ${s.destination}<br>
+        ETA: ${s.eta.date}
+      </div>`;
   });
 }
 
-// INITIAL RENDER
 renderShipments();
 </script>
 
