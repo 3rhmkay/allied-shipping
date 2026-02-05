@@ -1,395 +1,333 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Roomio</title>
+<meta charset="UTF-8">
+<title>Allied Shipping & Security Company</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* =====================
-   THEME VARIABLES
-===================== */
-:root {
-  --bg: #ecf0f3;
-  --text: #0f172a;
-  --surface: #ecf0f3;
-  --shadow-light: #ffffff;
-  --shadow-dark: #cbced1;
-}
-
-[data-theme="dark"] {
-  --bg: #0f172a;
-  --text: #e5e7eb;
-  --surface: #111827;
-  --shadow-light: #1f2933;
-  --shadow-dark: #020617;
-}
-
-/* =====================
-   RESET
-===================== */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  overflow-x: hidden;
-}
-
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f8;
+  color: #1f1f1f;
 }
 
-/* =====================
-   NAV BAR (STICKY)
-===================== */
-.nav {
-  position: sticky;     /* ✅ STICKY FIX */
-  top: 0;
-  z-index: 1200;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
-
-  background: var(--surface);
-  box-shadow:
-    8px 8px 16px var(--shadow-dark),
-    -8px -8px 16px var(--shadow-light);
-}
-
-.logo {
-  font-size: 1.6rem;
-  font-weight: bold;
-}
-
-.menu-btn,
-.theme-btn {
-  background: var(--surface);
-  border: none;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  font-size: 1.4rem;
-  cursor: pointer;
-  box-shadow:
-    6px 6px 12px var(--shadow-dark),
-    -6px -6px 12px var(--shadow-light);
-}
-
-.menu-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1301;
-}
-
-.theme-btn {
-  position: fixed;
-  top: 20px;
-  right: 70px;
-  z-index: 1301;
-}
-
-/* =====================
-   SIDEBAR NAV
-===================== */
-.nav-links {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 300px;
-  height: 100vh;
-  padding: 100px 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-
-  background: var(--surface);
-  transform: translateX(100%);
-  transition: transform 0.4s ease;
-  box-shadow: -10px 0 20px var(--shadow-dark);
-  z-index: 1302;
-}
-
-.nav-links.active {
-  transform: translateX(0);
-}
-
-.nav-links a {
-  padding: 12px 16px;
-  border-radius: 12px;
-  box-shadow:
-    6px 6px 12px var(--shadow-dark),
-    -6px -6px 12px var(--shadow-light);
-}
-
-/* =====================
-   NAV OVERLAY
-===================== */
-.nav-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--surface);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  box-shadow:
-    inset 12px 12px 24px var(--shadow-dark),
-    inset -12px -12px 24px var(--shadow-light);
-  z-index: 1300;
-}
-
-.nav-overlay.active {
-  opacity: 0.85;
-  pointer-events: all;
-}
-
-/* =====================
-   HERO
-===================== */
-.main {
-  height: 75vh;
-  margin: 20px;
-  border-radius: 30px;
-  background: #999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+header {
+  background: #0a1f44;
+  color: white;
+  padding: 30px;
   text-align: center;
-  box-shadow:
-    10px 10px 20px var(--shadow-dark),
-    -10px -10px 20px var(--shadow-light);
 }
 
-.main h1 {
-  font-size: clamp(3rem, 8vw, 6rem);
-  color: #fff;
-}
-
-.main p {
-  color: #f1f5f9;
-  max-width: 600px;
-  margin-top: 10px;
-}
-
-/* =====================
-   SECTIONS
-===================== */
 section {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 60px 30px;
-}
-
-.surface {
-  background: var(--surface);
-  border-radius: 30px;
-  box-shadow:
-    10px 10px 20px var(--shadow-dark),
-    -10px -10px 20px var(--shadow-light);
-}
-
-/* =====================
-   SERVICES
-===================== */
-.services {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-  gap: 20px;
+  padding: 30px;
+  max-width: 900px;
+  margin: auto;
 }
 
 .card {
-  padding: 25px;
-  border-radius: 30px;
-  background: var(--surface);
-  box-shadow:
-    6px 6px 15px var(--shadow-dark),
-    -6px -6px 15px var(--shadow-light);
-}
-
-/* =====================
-   CONTACT
-===================== */
-.contact form {
-  max-width: 500px;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-input, textarea {
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  background: var(--surface);
-  color: var(--text);
-  box-shadow:
-    inset 5px 5px 8px var(--shadow-dark),
-    inset -5px -5px 8px var(--shadow-light);
-}
-
-/* =====================
-   SUBMIT BUTTON
-===================== */
-button[type="submit"] {
-  margin-top: 10px;
-  padding: 14px;
-  border-radius: 16px;
-  border: none;
-  background: var(--surface);
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow:
-    6px 6px 12px var(--shadow-dark),
-    -6px -6px 12px var(--shadow-light);
-}
-
-button[type="submit"]:active {
-  box-shadow:
-    inset 5px 5px 8px var(--shadow-dark),
-    inset -5px -5px 8px var(--shadow-light);
-}
-
-/* =====================
-   FOOTER
-===================== */
-footer {
-  margin: 40px;
+  background: #ffffff;
   padding: 20px;
-  border-radius: 20px;
-  background: var(--surface);
+  margin-top: 20px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+h2 {
+  color: #0a1f44;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+button {
+  background: #0a1f44;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  color: #0a1f44;
+  border: 1px solid #0a1f44;
+}
+
+button.danger {
+  background: #b00020;
+}
+
+.shipment-item {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.timeline {
+  border-left: 3px solid #0a1f44;
+  padding-left: 15px;
+  margin-top: 10px;
+}
+
+.small {
+  font-size: 0.9em;
+  color: #666;
+}
+
+footer {
+  background: #0a1f44;
+  color: white;
   text-align: center;
-  box-shadow:
-    6px 6px 12px var(--shadow-dark),
-    -6px -6px 12px var(--shadow-light);
+  padding: 20px;
+  margin-top: 40px;
 }
 </style>
 </head>
 
 <body>
 
-<nav class="nav">
-  <div class="logo">Roomio</div>
-  <button class="theme-btn" id="themeBtn">🌙</button>
-  <button class="menu-btn" id="menuBtn">☰</button>
+<header>
+  <h1>Allied Shipping & Security Company</h1>
+  <p>Secure • Reliable • Global Logistics</p>
+</header>
 
-  <div class="nav-links" id="navLinks">
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
-    <a href="#terms">Terms</a>
-    <a href="#privacy">Privacy</a>
+<section>
+
+  <!-- TRACK SHIPMENT -->
+  <div class="card">
+    <h2>Track Shipment</h2>
+    <input id="trackInput" placeholder="Enter Tracking Number">
+    <button onclick="trackShipment()">Track</button>
+    <div id="trackResult"></div>
   </div>
 
-  <div class="nav-overlay" id="navOverlay"></div>
-</nav>
-
-<main>
-
-<section class="main" id="home">
-  <h1>Welcome to Roomio</h1>
-  <p>Discover, book, and manage hotels and guest houses with confidence.</p>
-</section>
-
-<section id="about" class="surface">
-  <h2>About Roomio</h2>
-  <p>
-    Roomio is a modern hotel and guest house discovery, booking, and management
-    platform available on Web, Android, and iOS.
-  </p>
-  <p>
-    It connects users with verified accommodation while providing property
-    owners tools to manage and promote their listings.
-  </p>
-</section>
-
-<section id="services">
-  <h2>What We Offer</h2>
-  <div class="services">
-    <div class="card"><h3>Discovery</h3><p>Verified hotels and guest houses.</p></div>
-    <div class="card"><h3>Accurate Location</h3><p>Pin-point mapping.</p></div>
-    <div class="card"><h3>Easy Booking</h3><p>Fast and intuitive flow.</p></div>
-    <div class="card"><h3>Management</h3><p>Tools for property owners.</p></div>
-    <div class="card"><h3>Support</h3><p>Reliable customer service.</p></div>
+  <!-- CREATE SHIPMENT -->
+  <div class="card">
+    <h2>Create Shipment</h2>
+    <input id="origin" placeholder="Origin (e.g. Swansea, UK)">
+    <input id="destination" placeholder="Destination (e.g. New York, USA)">
+    <button onclick="generateShipment()">Generate Tracking Number</button>
+    <div id="generatedResult"></div>
   </div>
-</section>
 
-<section id="contact" class="contact surface">
-  <h2>Get in Touch</h2>
-  <form>
-    <input required placeholder="Your Name">
-    <input required type="email" placeholder="Your Email">
-    <textarea required rows="5" placeholder="Your Message"></textarea>
-    <button type="submit">Send Message</button>
-  </form>
-</section>
+  <!-- ALL SHIPMENTS -->
+  <div class="card">
+    <h2>All Shipments</h2>
+    <div id="shipmentList"></div>
+  </div>
 
-<section id="terms" class="surface">
-  <h2>Terms of Service</h2>
-  <p>
-    Roomio provides accommodation discovery services. Users agree to use the
-    platform responsibly. Listings are provided by third-party owners.
-  </p>
-</section>
+  <!-- RESET SECTION -->
+  <div class="card">
+    <h2>Reset Shipments</h2>
+    <p class="small">
+      This will permanently remove all stored shipments from this browser.
+    </p>
+    <button class="danger" onclick="resetShipments()">
+      Reset All Shipments
+    </button>
+  </div>
 
-<section id="privacy" class="surface">
-  <h2>Privacy Policy</h2>
-  <p>
-    We collect personal data only to provide our services. Your information is
-    never sold and is protected using standard security practices.
-  </p>
-</section>
+  <!-- ABOUT -->
+  <div class="card">
+    <h2>About Allied Shipping</h2>
+    <p>
+      Allied Shipping & Security Company provides secure, reliable and transparent
+      logistics services worldwide with real-time tracking and delivery estimates.
+    </p>
+    <p>Email: alliedscpan78@gmail.com</p>
+    <p>UK: +44 7418 602503 </p>
+    <p>US: +1 (912) 309-3156</p>
+    <p>Location: Swansea, UK</p>
+  </div>
 
-</main>
+</section>
 
 <footer>
-  <p>&copy; 2026 Roomio. All rights reserved.</p>
-  <p>Built to simplify accommodation discovery and management.</p>
+  © 2026 Allied Shipping & Security Company
 </footer>
 
 <script>
-const nav = {
-  btn: document.getElementById("menuBtn"),
-  links: document.getElementById("navLinks"),
-  overlay: document.getElementById("navOverlay"),
-  open: false
-};
-
-function setNav(state) {
-  nav.open = state;
-  nav.links.classList.toggle("active", state);
-  nav.overlay.classList.toggle("active", state);
-  document.body.style.overflow = state ? "hidden" : "";
+/* ---------- SAFE STORAGE ---------- */
+function getShipments() {
+  try {
+    return JSON.parse(localStorage.getItem("shipments")) || {};
+  } catch {
+    localStorage.removeItem("shipments");
+    return {};
+  }
 }
 
-nav.btn.onclick = () => setNav(!nav.open);
-nav.overlay.onclick = () => setNav(false);
-nav.links.querySelectorAll("a").forEach(a =>
-  a.addEventListener("click", () => setNav(false))
-);
+function saveShipments(data) {
+  localStorage.setItem("shipments", JSON.stringify(data));
+}
 
-/* DARK MODE */
-const themeBtn = document.getElementById("themeBtn");
-const saved = localStorage.getItem("theme");
-if (saved) document.documentElement.setAttribute("data-theme", saved);
+/* ---------- TRACKING NUMBER ---------- */
+function generateTrackingNumber() {
+  const year = new Date().getFullYear();
+  const rand = Math.floor(1000 + Math.random() * 9000);
+  return `ASC-${year}-${rand}`;
+}
 
-themeBtn.onclick = () => {
-  const dark = document.documentElement.getAttribute("data-theme") === "dark";
-  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
-  localStorage.setItem("theme", dark ? "light" : "dark");
-};
+/* ---------- ETA ---------- */
+function calculateETA(origin, destination) {
+  const international =
+    !origin.toLowerCase().includes("uk") ||
+    !destination.toLowerCase().includes("uk");
+
+  const days = international
+    ? Math.floor(Math.random() * 7) + 7
+    : Math.floor(Math.random() * 3) + 3;
+
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+
+  return { days, date: d.toDateString() };
+}
+
+/* ---------- STATUS FLOW ---------- */
+const STATUS_FLOW = ["Created", "In Transit", "Out for Delivery", "Delivered"];
+
+function nextStatus(current) {
+  const i = STATUS_FLOW.indexOf(current);
+  return STATUS_FLOW[Math.min(i + 1, STATUS_FLOW.length - 1)];
+}
+
+/* ---------- CREATE SHIPMENT ---------- */
+function generateShipment() {
+  const originInput = document.getElementById("origin");
+  const destinationInput = document.getElementById("destination");
+
+  const origin = originInput.value.trim();
+  const destination = destinationInput.value.trim();
+
+  if (!origin || !destination) {
+    alert("Please fill in both origin and destination.");
+    return;
+  }
+
+  const shipments = getShipments();
+  let tracking;
+
+  do {
+    tracking = generateTrackingNumber();
+  } while (shipments[tracking]);
+
+  const eta = calculateETA(origin, destination);
+
+  shipments[tracking] = {
+    origin,
+    destination,
+    status: "Created",
+    eta,
+    updates: [{
+      date: new Date().toLocaleString(),
+      message: "Shipment created"
+    }]
+  };
+
+  saveShipments(shipments);
+
+  originInput.value = "";
+  destinationInput.value = "";
+
+  document.getElementById("generatedResult").innerHTML = `
+    <p><strong>Tracking Number:</strong></p>
+    <p><strong>${tracking}</strong></p>
+    <button class="secondary" onclick="navigator.clipboard.writeText('${tracking}')">
+      📋 Copy Tracking Number
+    </button>
+    <p class="small">Estimated delivery: ${eta.date} (${eta.days} days)</p>
+  `;
+
+  renderShipments();
+}
+
+/* ---------- TRACK SHIPMENT ---------- */
+function trackShipment() {
+  const id = document.getElementById("trackInput").value.trim();
+  const result = document.getElementById("trackResult");
+
+  if (!id) {
+    result.innerHTML = "<p style='color:red'>Enter a tracking number.</p>";
+    return;
+  }
+
+  const shipments = getShipments();
+  const s = shipments[id];
+
+  if (!s) {
+    result.innerHTML = "<p style='color:red'>Tracking number not found.</p>";
+    return;
+  }
+
+  result.innerHTML = `
+    <p><strong>Status:</strong> ${s.status}</p>
+    <p><strong>Route:</strong> ${s.origin} → ${s.destination}</p>
+    <p><strong>ETA:</strong> ${s.eta.date} (${s.eta.days} days)</p>
+    <div class="timeline">
+      ${s.updates.map(u =>
+        `<div><strong>${u.date}</strong><br>${u.message}</div>`
+      ).join("")}
+    </div>
+  `;
+}
+
+/* ---------- RENDER SHIPMENTS ---------- */
+function renderShipments() {
+  const list = document.getElementById("shipmentList");
+  const shipments = getShipments();
+  list.innerHTML = "";
+
+  Object.entries(shipments).forEach(([id, s]) => {
+    list.innerHTML += `
+      <div class="shipment-item">
+        <strong>${id}</strong><br>
+        ${s.origin} → ${s.destination}<br>
+        Status: <strong>${s.status}</strong><br>
+        <button class="secondary" onclick="updateStatus('${id}')">
+          Advance Status
+        </button>
+      </div>
+    `;
+  });
+}
+
+/* ---------- UPDATE STATUS ---------- */
+function updateStatus(id) {
+  const shipments = getShipments();
+  const s = shipments[id];
+
+  const newStatus = nextStatus(s.status);
+  if (newStatus !== s.status) {
+    s.status = newStatus;
+    s.updates.push({
+      date: new Date().toLocaleString(),
+      message: `Status updated to "${newStatus}"`
+    });
+    saveShipments(shipments);
+    renderShipments();
+  }
+}
+
+/* ---------- RESET ---------- */
+function resetShipments() {
+  if (confirm("Are you sure you want to reset all shipments?")) {
+    localStorage.removeItem("shipments");
+    document.getElementById("shipmentList").innerHTML = "";
+    document.getElementById("trackResult").innerHTML = "";
+    document.getElementById("generatedResult").innerHTML = "";
+    alert("All shipments have been reset.");
+  }
+}
+
+/* INIT */
+renderShipments();
 </script>
 
 </body>
