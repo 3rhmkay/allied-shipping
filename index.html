@@ -45,10 +45,6 @@ input, button {
   box-sizing: border-box;
 }
 
-input {
-  border: 1px solid #ccc;
-}
-
 button {
   background: #0a1f44;
   color: white;
@@ -62,18 +58,22 @@ button.secondary {
   border: 1px solid #0a1f44;
 }
 
-button:hover {
-  opacity: 0.9;
+.shipment-item {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 4px;
 }
 
 .timeline {
   border-left: 3px solid #0a1f44;
   padding-left: 15px;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
-.timeline div {
-  margin-bottom: 10px;
+.small {
+  font-size: 0.9em;
+  color: #666;
 }
 
 footer {
@@ -82,11 +82,6 @@ footer {
   text-align: center;
   padding: 20px;
   margin-top: 40px;
-}
-
-.small {
-  font-size: 0.9em;
-  color: #666;
 }
 </style>
 </head>
@@ -100,101 +95,91 @@ footer {
 
 <section>
 
-  <!-- TRACK SHIPMENT -->
+  <!-- TRACK -->
   <div class="card">
-    <h2>Track Your Shipment</h2>
+    <h2>Track Shipment</h2>
     <input id="trackInput" placeholder="Enter Tracking Number">
-    <button onclick="trackShipment()">Track Shipment</button>
+    <button onclick="trackShipment()">Track</button>
     <div id="trackResult"></div>
   </div>
 
-  <!-- GENERATE SHIPMENT -->
+  <!-- GENERATE -->
   <div class="card">
-    <h2>Generate Tracking Number</h2>
-    <input id="origin" placeholder="Origin (e.g. Swansea, UK)">
-    <input id="destination" placeholder="Destination (e.g. New York, USA)">
+    <h2>Create Shipment</h2>
+    <input id="origin" placeholder="Origin">
+    <input id="destination" placeholder="Destination">
     <button onclick="generateShipment()">Generate Tracking Number</button>
     <div id="generatedResult"></div>
   </div>
 
-  <!-- ABOUT / CONTACT -->
+  <!-- ALL SHIPMENTS -->
+  <div class="card">
+    <h2>All Shipments</h2>
+    <div id="shipmentList"></div>
+  </div>
+
+  <!-- ABOUT -->
   <div class="card">
     <h2>About Allied Shipping</h2>
     <p>
-      Allied Shipping & Security Company provides secure, reliable, and
-      efficient logistics services worldwide. We prioritize shipment safety,
-      transparency, and timely delivery.
+      We provide secure, transparent, and reliable shipping solutions
+      worldwide with real-time tracking and delivery estimation.
     </p>
-    <p><strong>Email:</strong> alliedscpan78@gmail.com</p>
-    <p><strong>UK Branch:</strong> +44 7418 602503</p>
-    <p><strong>US Branch:</strong> +1 (912) 309-3156</p>
-    <p><strong>Location:</strong> Swansea, UK</p>
+    <p>Email: alliedscpan78@gmail.com</p>
+    <p>UK: +44 7418 602503 | US: +1 (912) 309-3156</p>
+    <p>Location: Swansea, UK</p>
   </div>
 
 </section>
 
 <footer>
-  <p>© 2026 Allied Shipping & Security Company</p>
+  © 2026 Allied Shipping & Security Company
 </footer>
 
 <script>
-/* ---------- STORAGE ---------- */
+/* STORAGE */
 function getShipments() {
-  try {
-    return JSON.parse(localStorage.getItem("shipments")) || {};
-  } catch {
-    localStorage.removeItem("shipments");
-    return {};
-  }
+  return JSON.parse(localStorage.getItem("shipments")) || {};
 }
-
 function saveShipments(data) {
   localStorage.setItem("shipments", JSON.stringify(data));
 }
 
-/* ---------- TRACKING NUMBER ---------- */
+/* TRACKING */
 function generateTrackingNumber() {
-  const year = new Date().getFullYear();
-  const rand = Math.floor(1000 + Math.random() * 9000);
-  return `ASC-UK-${year}-${rand}`;
+  const y = new Date().getFullYear();
+  return `ASC-${y}-${Math.floor(1000 + Math.random() * 9000)}`;
 }
 
-/* ---------- ETA ---------- */
-function calculateETA(origin, destination) {
-  const international =
-    !origin.toLowerCase().includes("uk") ||
-    !destination.toLowerCase().includes("uk");
-
-  const days = international
-    ? Math.floor(Math.random() * 7) + 7
-    : Math.floor(Math.random() * 3) + 3;
-
+/* ETA */
+function calculateETA() {
+  const days = Math.floor(Math.random() * 5) + 4;
   const d = new Date();
   d.setDate(d.getDate() + days);
-
   return { days, date: d.toDateString() };
 }
 
-/* ---------- GENERATE SHIPMENT ---------- */
-function generateShipment() {
-  const origin = document.getElementById("origin").value.trim();
-  const destination = document.getElementById("destination").value.trim();
+/* STATUS FLOW */
+const statuses = ["Created", "In Transit", "Out for Delivery", "Delivered"];
 
-  if (!origin || !destination) {
-    alert("Please enter both origin and destination.");
-    return;
-  }
+function nextStatus(current) {
+  const i = statuses.indexOf(current);
+  return statuses[Math.min(i + 1, statuses.length - 1)];
+}
+
+/* CREATE */
+function generateShipment() {
+  const origin = originInput.value.trim();
+  const destination = destinationInput.value.trim();
+  if (!origin || !destination) return alert("Fill all fields");
 
   const shipments = getShipments();
-  let tracking;
+  let id;
+  do { id = generateTrackingNumber(); } while (shipments[id]);
 
-  do {
-    tracking = generateTrackingNumber();
-  } while (shipments[tracking]);
+  const eta = calculateETA();
 
-  const eta = calculateETA(origin, destination);
-
-  shipments[tracking] = {
+  shipments[id] = {
     origin,
     destination,
     status: "Created",
@@ -206,64 +191,74 @@ function generateShipment() {
   };
 
   saveShipments(shipments);
+  originInput.value = destinationInput.value = "";
 
-  document.getElementById("origin").value = "";
-  document.getElementById("destination").value = "";
-
-  document.getElementById("generatedResult").innerHTML = `
-    <p><strong>Tracking Number:</strong></p>
-    <p id="trackingCode" style="font-size:1.2em;color:#0a1f44">
-      <strong>${tracking}</strong>
-    </p>
-    <button class="secondary" onclick="copyTracking()">📋 Copy Tracking Number</button>
-    <p class="small" id="copyStatus"></p>
-    <p><strong>Estimated Delivery:</strong> ${eta.date} (${eta.days} days)</p>
+  generatedResult.innerHTML = `
+    <p><strong>${id}</strong></p>
+    <button class="secondary" onclick="copyText('${id}')">Copy</button>
+    <p class="small">ETA: ${eta.date}</p>
   `;
+
+  renderShipments();
 }
 
-/* ---------- COPY ---------- */
-function copyTracking() {
-  const text = document.getElementById("trackingCode").innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    document.getElementById("copyStatus").innerText = "Copied to clipboard ✔";
-  });
+/* COPY */
+function copyText(t) {
+  navigator.clipboard.writeText(t);
 }
 
-/* ---------- TRACK SHIPMENT ---------- */
+/* TRACK */
 function trackShipment() {
-  const id = document.getElementById("trackInput").value.trim();
-  const result = document.getElementById("trackResult");
+  const id = trackInput.value.trim();
+  const s = getShipments()[id];
+  if (!s) return trackResult.innerHTML = "<p style='color:red'>Not found</p>";
 
-  if (!id) {
-    result.innerHTML = "<p style='color:red'>Please enter a tracking number.</p>";
-    return;
-  }
-
-  const shipments = getShipments();
-  const s = shipments[id];
-
-  if (!s) {
-    result.innerHTML = "<p style='color:red'>Tracking number not found.</p>";
-    return;
-  }
-
-  result.innerHTML = `
-    <p><strong>Status:</strong> ${s.status}</p>
-    <p><strong>From:</strong> ${s.origin}</p>
-    <p><strong>To:</strong> ${s.destination}</p>
-    <p><strong>Estimated Delivery:</strong> ${s.eta.date} (${s.eta.days} days)</p>
-
-    <h3>Shipment Timeline</h3>
+  trackResult.innerHTML = `
+    <p>Status: <strong>${s.status}</strong></p>
+    <p>${s.origin} → ${s.destination}</p>
+    <p>ETA: ${s.eta.date}</p>
     <div class="timeline">
-      ${s.updates.map(u => `
-        <div>
-          <strong>${u.date}</strong><br>
-          ${u.message}
-        </div>
-      `).join("")}
+      ${s.updates.map(u => `<div><strong>${u.date}</strong><br>${u.message}</div>`).join("")}
     </div>
   `;
 }
+
+/* RENDER LIST */
+function renderShipments() {
+  const list = document.getElementById("shipmentList");
+  const shipments = getShipments();
+  list.innerHTML = "";
+
+  Object.entries(shipments).forEach(([id, s]) => {
+    list.innerHTML += `
+      <div class="shipment-item">
+        <strong>${id}</strong><br>
+        ${s.origin} → ${s.destination}<br>
+        Status: <strong>${s.status}</strong><br>
+        <button class="secondary" onclick="updateStatus('${id}')">Update Status</button>
+      </div>
+    `;
+  });
+}
+
+/* UPDATE STATUS */
+function updateStatus(id) {
+  const shipments = getShipments();
+  const s = shipments[id];
+  const newStatus = nextStatus(s.status);
+
+  if (newStatus !== s.status) {
+    s.status = newStatus;
+    s.updates.push({
+      date: new Date().toLocaleString(),
+      message: `Status updated to "${newStatus}"`
+    });
+    saveShipments(shipments);
+    renderShipments();
+  }
+}
+
+renderShipments();
 </script>
 
 </body>
