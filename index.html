@@ -58,6 +58,10 @@ button.secondary {
   border: 1px solid #0a1f44;
 }
 
+button.danger {
+  background: #b00020;
+}
+
 .shipment-item {
   border: 1px solid #ddd;
   padding: 12px;
@@ -118,6 +122,17 @@ footer {
     <div id="shipmentList"></div>
   </div>
 
+  <!-- RESET SECTION -->
+  <div class="card">
+    <h2>Reset Shipments</h2>
+    <p class="small">
+      This will permanently remove all stored shipments from this browser.
+    </p>
+    <button class="danger" onclick="resetShipments()">
+      Reset All Shipments
+    </button>
+  </div>
+
   <!-- ABOUT -->
   <div class="card">
     <h2>About Allied Shipping</h2>
@@ -126,8 +141,7 @@ footer {
       logistics services worldwide with real-time tracking and delivery estimates.
     </p>
     <p>Email: alliedscpan78@gmail.com</p>
-    <p>UK: +44 7418 602503 </p>
-    <p>US: +1 (912) 309-3156</p>
+    <p>UK: +44 7418 602503 | US: +1 (912) 309-3156</p>
     <p>Location: Swansea, UK</p>
   </div>
 
@@ -142,7 +156,7 @@ footer {
 function getShipments() {
   try {
     return JSON.parse(localStorage.getItem("shipments")) || {};
-  } catch (e) {
+  } catch {
     localStorage.removeItem("shipments");
     return {};
   }
@@ -223,17 +237,14 @@ function generateShipment() {
 
   document.getElementById("generatedResult").innerHTML = `
     <p><strong>Tracking Number:</strong></p>
-    <p id="trackingCode"><strong>${tracking}</strong></p>
-    <button class="secondary" onclick="copyTracking('${tracking}')">📋 Copy</button>
+    <p><strong>${tracking}</strong></p>
+    <button class="secondary" onclick="navigator.clipboard.writeText('${tracking}')">
+      📋 Copy Tracking Number
+    </button>
     <p class="small">Estimated delivery: ${eta.date} (${eta.days} days)</p>
   `;
 
   renderShipments();
-}
-
-/* ---------- COPY ---------- */
-function copyTracking(text) {
-  navigator.clipboard.writeText(text);
 }
 
 /* ---------- TRACK SHIPMENT ---------- */
@@ -303,7 +314,18 @@ function updateStatus(id) {
   }
 }
 
-/* ---------- INIT ---------- */
+/* ---------- RESET ---------- */
+function resetShipments() {
+  if (confirm("Are you sure you want to reset all shipments?")) {
+    localStorage.removeItem("shipments");
+    document.getElementById("shipmentList").innerHTML = "";
+    document.getElementById("trackResult").innerHTML = "";
+    document.getElementById("generatedResult").innerHTML = "";
+    alert("All shipments have been reset.");
+  }
+}
+
+/* INIT */
 renderShipments();
 </script>
 
